@@ -1124,8 +1124,8 @@ cc.color = function (r, g, b, a) {
     if (typeof r === "string")
         return cc.hexToColor(r);
     if (typeof r === "object")
-        return {r: r.r, g: r.g, b: r.b, a: r.a || 255};
-    return  {r: r, g: g, b: b, a: a || 255};
+        return {r: r.r, g: r.g, b: r.b, a: cc.isNumber(r.a) ? a : 255};
+    return  {r: r, g: g, b: b, a: cc.isNumber(a) ? a : 255};
 };
 
 /**
