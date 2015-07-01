@@ -951,11 +951,7 @@ void __JSDownloaderDelegator::startDownload()
         
         cocos2d::extension::Downloader::HeaderInfo info = _downloader->getHeader(_url);
         long contentSize = info.contentSize;
-        if (contentSize == -1 || info.responseCode >= 400) {
-            cocos2d::extension::Downloader::Error err;
-            onError(err);
-        }
-        else {
+        if (contentSize > 0 && info.responseCode < 400) {
             _size = contentSize / sizeof(unsigned char);
             _buffer = (unsigned char*)malloc(contentSize);
             _downloader->downloadToBufferSync(_url, _buffer, _size);
@@ -995,21 +991,21 @@ void __JSDownloaderDelegator::onError(const cocos2d::extension::Downloader::Erro
 
 void __JSDownloaderDelegator::onSuccess(const std::string &srcUrl, const std::string &storagePath, const std::string &customId)
 {
-    Director::getInstance()->getScheduler()->performFunctionInCocosThread([this]
+    Image *image = new Image();
+    cocos2d::TextureCache *cache = Director::getInstance()->getTextureCache();
+    
+    Texture2D *tex = cache->getTextureForKey(_url);
+    if (!tex)
     {
-        Image *image = new Image();
-        cocos2d::TextureCache *cache = Director::getInstance()->getTextureCache();
-        
-        Texture2D *tex = cache->getTextureForKey(_url);
-        if (!tex)
+        if (image->initWithImageData(_buffer, _size))
         {
-            if (image->initWithImageData(_buffer, _size))
-            {
-                tex = Director::getInstance()->getTextureCache()->addImage(image, _url);
-            }
+            tex = Director::getInstance()->getTextureCache()->addImage(image, _url);
         }
-        image->release();
-        
+    }
+    image->release();
+    
+    Director::getInstance()->getScheduler()->performFunctionInCocosThread([this, tex]
+    {
         JS::RootedObject global(_cx, ScriptingCore::getInstance()->getGlobalObject());
         JSAutoCompartment ac(_cx, global);
         
