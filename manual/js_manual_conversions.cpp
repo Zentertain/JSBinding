@@ -534,7 +534,17 @@ bool jsval_to_long_long(JSContext *cx, JS::HandleValue vp, long long* r)
 }
 
 bool jsval_to_std_string(JSContext *cx, JS::HandleValue v, std::string* ret) {
-    if(v.isString() || v.isNumber())
+    if(v.isNull())
+    {
+        *ret = "null";
+        return true;
+    }
+    else if(v.isUndefined())
+    {
+        *ret = "undefined";
+        return true;
+    }
+    else if(v.isString() || v.isNumber())
     {
         JSString *tmp = JS::ToString(cx, v);
         JSB_PRECONDITION3(tmp, cx, false, "Error processing arguments");
