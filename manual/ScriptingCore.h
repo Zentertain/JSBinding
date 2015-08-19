@@ -47,6 +47,13 @@ typedef void (*sc_register_sth)(JSContext* cx, JS::HandleObject global);
 
 void registerDefaultClasses(JSContext* cx, JS::HandleObject global);
 
+class JSErrorData {
+public:
+    std::string message;
+    std::string fileName;
+    int lineNum;
+};
+
 
 class SimpleRunLoop : public cocos2d::Ref
 {
