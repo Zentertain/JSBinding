@@ -955,7 +955,7 @@ static bool js_callFunc(JSContext *cx, uint32_t argc, jsval *vp)
                 js_proxy_t *proxy = js_get_or_create_proxy<cocos2d::Node>(cx, sender);
             
                 JS::RootedValue retval(cx);
-                if(jsvalCallback != JSVAL_VOID)
+                if(jsvalCallback != JSVAL_VOID && jsvalCallback != JSVAL_NULL)
                 {
                     if (hasExtraData)
                     {
