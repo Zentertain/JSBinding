@@ -620,6 +620,9 @@ cc.loader = {
             loader = self._register[type.toLowerCase()];
         }
         if (!loader) {
+            loader = self._register[".json"];
+        }
+        if (!loader) {
             cc.error("loader for [" + type + "] not exists!");
             return cb();
         }
@@ -765,7 +768,7 @@ cc.loader = {
         if (cached)
             return cached;
         var type = cc.path.extname(url);
-        var loader = this._register[type.toLowerCase()];
+        var loader = this._register[type.toLowerCase()] || this._register[".json"];
         if(!loader) return cc.log("loader for [" + type + "] not exists!");
         var basePath = loader.getBasePath ? loader.getBasePath() : this.resPath;
         var realUrl = this.getUrl(basePath, url);
