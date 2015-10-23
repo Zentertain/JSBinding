@@ -2581,6 +2581,11 @@ downloadFailedAssets : function (
 {
 },
 
+getTotalFileCount : function (
+)
+{
+},
+
 /**
  * @method create
  * @param {String} arg0
