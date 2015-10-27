@@ -51,6 +51,14 @@ JNIEXPORT jint JNICALL Java_org_cocos2dx_lib_Cocos2dxJavascriptJavaBridge_evalSt
 
 JavascriptJavaBridge::CallInfo::~CallInfo(void)
 {
+    if (m_env)
+    {
+        if (m_classID)
+        {
+            m_env->DeleteLocalRef(m_classID);
+
+        }
+    }
     if (m_returnType == TypeString && m_ret.stringValue)
     {
         delete m_ret.stringValue;
@@ -384,7 +392,29 @@ JS_BINDED_FUNC_IMPL(JavascriptJavaBridge, callStaticMethod)
                 }
             }
             bool success = call.executeWithArgs(args);
-            if (args) delete []args;
+            if (args)
+            {
+                for (int i = 0; i < count; ++i){
+                    int index = i + 3;
+                    switch (call.argumentTypeAtIndex(i))
+                    {
+                        case TypeInteger:
+                            break;
+
+                        case TypeFloat:
+                            break;
+
+                        case TypeBoolean:
+                            break;
+
+                        case TypeString:
+                        default:
+                            call.getEnv()->DeleteLocalRef(args[i].l);
+                            break;
+                    }
+                }
+                delete []args;
+            }
             int errorCode = call.getErrorCode();
             if(errorCode < 0)
                 JS_ReportError(cx, "js_cocos2dx_JSJavaBridge : call result code: %d", errorCode);
