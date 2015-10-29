@@ -7370,11 +7370,8 @@ bool js_cocos2dx_extension_EventListenerAssetsManagerEx_init(JSContext *cx, uint
         do {
 		    if(JS_TypeOfValue(cx, args.get(1)) == JSTYPE_FUNCTION)
 		    {
-                int r = rand();
-                CCLOG("Register function: EventAssetsManagerEx, %d", r);
                 std::shared_ptr<JSFunctionWrapper> func(new JSFunctionWrapper(cx, args.thisv().toObjectOrNull(), args.get(1)));
 		        auto lambda = [=](cocos2d::extension::EventAssetsManagerEx* larg0) -> void {
-                    CCLOG("Enter function: EventAssetsManagerEx, %d", r);
 		            JSB_AUTOCOMPARTMENT_WITH_GLOBAL_OBJCET
 		            jsval largv[1];
 		            do {
