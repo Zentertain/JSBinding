@@ -149,6 +149,7 @@ public:
     JS_BINDED_CLASS_GLUE(JavascriptJavaBridge);
     JS_BINDED_CONSTRUCTOR(JavascriptJavaBridge);
     JS_BINDED_FUNC(JavascriptJavaBridge, callStaticMethod);
+    JS_BINDED_FUNC(JavascriptJavaBridge, isValidMethod);
 
 };
 

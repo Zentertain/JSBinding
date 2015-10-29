@@ -163,6 +163,33 @@ bool JavaScriptObjCBridge::CallInfo::execute(JSContext *cx,jsval *argv,unsigned 
     
     return true;
 }
+
+bool JavaScriptObjCBridge::CallInfo::isValid()
+{
+    NSString * className =[NSString stringWithCString: m_className.c_str() encoding:NSUTF8StringEncoding];
+    NSString *methodName = [NSString stringWithCString: m_methodName.c_str() encoding:NSUTF8StringEncoding];
+    
+    if(!className || !methodName){
+        return false;
+    }
+
+    Class targetClass = NSClassFromString(className);
+    if(!targetClass){
+        return false;
+    }
+    SEL methodSel;
+    methodSel = NSSelectorFromString(methodName);
+    if(!methodSel){
+        return false;
+    }
+    NSMethodSignature *methodSig = [targetClass methodSignatureForSelector:(SEL)methodSel];
+    if(methodSig == nil){
+        return false;
+    }
+    return true;
+}
+
+
 void JavaScriptObjCBridge::CallInfo::pushValue(void *val){
     id oval = (id)val;
     if (oval == nil)
@@ -264,6 +291,18 @@ JS_BINDED_FUNC_IMPL(JavaScriptObjCBridge, callStaticMethod){
     return false;
 }
 
+JS_BINDED_FUNC_IMPL(JavaScriptObjCBridge, isValidMethod){
+    JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+    if (argc >= 2) {
+        JSStringWrapper arg0(args.get(0));
+        JSStringWrapper arg1(args.get(1));
+        CallInfo call(arg0.get(),arg1.get());
+        args.rval().set(BOOLEAN_TO_JSVAL(call.isValid()));
+        return true;
+    }
+    return false;
+}
+
 static bool js_is_native_obj(JSContext *cx, uint32_t argc, jsval *vp)
 {
     JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
@@ -289,6 +328,7 @@ void JavaScriptObjCBridge::_js_register(JSContext *cx, JS::HandleObject global)
     
     static JSFunctionSpec funcs[] = {
         JS_BINDED_FUNC_FOR_DEF(JavaScriptObjCBridge, callStaticMethod),
+        JS_BINDED_FUNC_FOR_DEF(JavaScriptObjCBridge, isValidMethod),
         JS_FS_END
     };
     

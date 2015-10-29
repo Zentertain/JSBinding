@@ -429,6 +429,28 @@ JS_BINDED_FUNC_IMPL(JavascriptJavaBridge, callStaticMethod)
     return false;
 }
 
+/**
+ *  @brief implementation for call java static method
+ */
+JS_BINDED_FUNC_IMPL(JavascriptJavaBridge, isValidMethod)
+{
+    JS::CallArgs argv = JS::CallArgsFromVp(argc, vp);
+    if (argc == 3) {
+        JSStringWrapper arg0(argv[0]);
+        JSStringWrapper arg1(argv[1]);
+        JSStringWrapper arg2(argv[2]);
+
+        CallInfo call(arg0.get(), arg1.get(), arg2.get());
+        argv.rval().set(BOOLEAN_TO_JSVAL(call.isValid()));
+        return true;
+    }
+    else{
+    	JS_ReportError(cx, "js_cocos2dx_JSJavaBridge : isValidMethod: wrong number of arguments: %d, was expecting 3", argc);
+    }
+
+    return false;
+}
+
 static bool js_is_native_obj(JSContext *cx, uint32_t argc, jsval *vp)
 {
     JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
@@ -454,6 +476,7 @@ void JavascriptJavaBridge::_js_register(JSContext *cx, JS::HandleObject global)
     
     static JSFunctionSpec funcs[] = {
         JS_BINDED_FUNC_FOR_DEF(JavascriptJavaBridge, callStaticMethod),
+        JS_BINDED_FUNC_FOR_DEF(JavascriptJavaBridge, isValidMethod),
         JS_FS_END
     };
     

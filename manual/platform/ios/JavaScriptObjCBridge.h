@@ -74,9 +74,7 @@ private:
         {
         }
         ~CallInfo(void);
-        bool isValid(void) {
-            return m_valid;
-        }
+        bool isValid(void);
         
         int getErrorCode(void) {
             return m_error;
@@ -105,4 +103,5 @@ public:
     JS_BINDED_CLASS_GLUE(JSObjCBridge);
     JS_BINDED_CONSTRUCTOR(JSObjCBridge);
     JS_BINDED_FUNC(JSObjCBridge, callStaticMethod);
+    JS_BINDED_FUNC(JSObjCBridge, isValidMethod);
 };
