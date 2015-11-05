@@ -810,10 +810,17 @@ void ScriptingCore::reportError(JSContext *cx, const char *message, JSErrorRepor
             report->filename ? report->filename : "<no filename=\"filename\">",
             (unsigned int) report->lineno,
             message);
+    js_log("errorNumber:%u, exnType: %d, flags: %u, column: %u\n",(unsigned int)report->errorNumber, report->exnType, (unsigned int)report->flags, (unsigned int)report->column);
+    //    js_log("linebuf:%s, ucmessage:%s, messageArg0: %s, tokenptr:%s\n", report->linebuf, report->ucmessage, report->messageArgs, report->tokenptr);
     JSErrorData jsErrorData;
     jsErrorData.fileName = report->filename ? report->filename : "";
     jsErrorData.message = message ? message : "";
     jsErrorData.lineNum = report->lineno;
+    jsErrorData.columnNum = report->column;
+    jsErrorData.errorNumber = report->errorNumber;
+    jsErrorData.flags = report->flags;
+    jsErrorData.exnType = report->exnType;
+
     cocos2d::Director::getInstance()->getEventDispatcher()->dispatchCustomEvent("reportJSError", &jsErrorData);
 };
 

@@ -52,6 +52,10 @@ public:
     std::string message;
     std::string fileName;
     int lineNum;
+    int columnNum;
+    int flags;
+    int errorNumber;
+    int exnType;
 };
 
 
