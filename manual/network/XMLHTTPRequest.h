@@ -88,6 +88,12 @@ public:
     void handle_requestResponse(cocos2d::network::HttpClient *sender, cocos2d::network::HttpResponse *response);
 
     void update(float dt);
+    
+    void clearJsObjects();
+    
+    static void removeAllJsObjects();
+    static void enableJsObjectTracking(bool enabled);
+    
 private:
     void _gotHeader(std::string header);
     void _setRequestHeader(const char* field, const char* value);

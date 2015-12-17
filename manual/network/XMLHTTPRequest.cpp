@@ -32,6 +32,8 @@
 
 using namespace std;
 
+static std::unordered_set<MinXmlHttpRequest*> s_allXhrObjects;
+static bool s_enableJsObjectTracking = false;
 
 //#pragma mark - MinXmlHttpRequest
 
@@ -293,6 +295,8 @@ MinXmlHttpRequest::MinXmlHttpRequest()
 {
     _scheduler = cocos2d::Director::getInstance()->getScheduler();
     _scheduler->retain();
+    if (s_enableJsObjectTracking)
+        s_allXhrObjects.insert(this);
 }
 
 /**
@@ -301,7 +305,11 @@ MinXmlHttpRequest::MinXmlHttpRequest()
  */
 MinXmlHttpRequest::~MinXmlHttpRequest()
 {
-
+    auto itr = s_allXhrObjects.find(this);
+    if (itr == s_allXhrObjects.end())
+    {
+        s_allXhrObjects.erase(itr);
+    }
 #define SAFE_REMOVE_OBJECT(callback) if (callback != NULL)\
     {\
         JS::RemoveObjectRoot(_cx, &callback);\
@@ -323,6 +331,27 @@ MinXmlHttpRequest::~MinXmlHttpRequest()
 
     CC_SAFE_FREE(_data);
     CC_SAFE_RELEASE_NULL(_scheduler);
+}
+
+void MinXmlHttpRequest::clearJsObjects() {
+    _onreadystateCallback = nullptr;
+    _onloadstartCallback = nullptr;
+    _onloadendCallback = nullptr;
+    _onloadCallback = nullptr;
+    _onerrorCallback = nullptr;
+    _onabortCallback = nullptr;
+    _ontimeoutCallback = nullptr;
+}
+
+void MinXmlHttpRequest::removeAllJsObjects() {
+    for (MinXmlHttpRequest* pReq: s_allXhrObjects)
+    {
+        pReq->clearJsObjects();
+    }
+}
+
+void MinXmlHttpRequest::enableJsObjectTracking(bool enabled) {
+    s_enableJsObjectTracking = enabled;
 }
 
 /**

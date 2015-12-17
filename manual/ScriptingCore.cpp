@@ -33,6 +33,7 @@
 #include "cocos2d_specifics.hpp"
 #include "jsb_cocos2dx_auto.hpp"
 #include "js_bindings_config.h"
+#include "XMLHttpRequest.h"
 // for debug socket
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32 || CC_TARGET_PLATFORM == CC_PLATFORM_WP8 || CC_TARGET_PLATFORM == CC_PLATFORM_WINRT)
 #include <io.h>
@@ -802,6 +803,7 @@ void ScriptingCore::cleanup()
     _js_global_type_map.clear();
     filename_script.clear();
     registrationList.clear();
+    MinXmlHttpRequest::removeAllJsObjects();
 }
 
 void ScriptingCore::reportError(JSContext *cx, const char *message, JSErrorReport *report)
