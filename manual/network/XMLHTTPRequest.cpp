@@ -348,6 +348,7 @@ void MinXmlHttpRequest::removeAllJsObjects() {
     {
         pReq->clearJsObjects();
     }
+    s_allXhrObjects.clear();
 }
 
 void MinXmlHttpRequest::enableJsObjectTracking(bool enabled) {
