@@ -33,7 +33,7 @@
 #include "cocos2d_specifics.hpp"
 #include "jsb_cocos2dx_auto.hpp"
 #include "js_bindings_config.h"
-#include "XMLHttpRequest.h"
+#include "network/XMLHttpRequest.h"
 // for debug socket
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32 || CC_TARGET_PLATFORM == CC_PLATFORM_WP8 || CC_TARGET_PLATFORM == CC_PLATFORM_WINRT)
 #include <io.h>
