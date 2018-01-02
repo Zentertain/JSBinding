@@ -248,12 +248,17 @@ bool JavascriptJavaBridge::CallInfo::getMethodInfo(void)
     m_classID = (jclass) m_env->CallObjectMethod(cocos2d::JniHelper::classloader,
                                                    cocos2d::JniHelper::loadclassMethod_methodID,
                                                    _jstrClassName);
-
+    m_env->DeleteLocalRef(_jstrClassName);
     if (NULL == m_classID) {
-        LOGD("Classloader failed to find class of %s", m_className.c_str());
+        m_env->ExceptionClear();
+        LOGD("Classloader failed to find class of %s.%s %s",
+                m_className.c_str(),
+                m_methodName.c_str(),
+                m_methodSig.c_str());
+        m_error = JSJ_ERR_METHOD_NOT_FOUND;
+        return false;
     }
 
-    m_env->DeleteLocalRef(_jstrClassName);
     m_methodID = m_env->GetStaticMethodID(m_classID, m_methodName.c_str(), m_methodSig.c_str());
     if (!m_methodID)
     {
